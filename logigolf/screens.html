@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>LogiGolf</title>
+
+<style>
+html, body {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-image: url("img/Background.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    overflow-y: auto;
+}
+
+.gallery {
+    width: 90vw;
+    max-width: 1200px;
+
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+
+    padding: 40px;
+}
+
+.gallery img {
+    width: 100%;
+    object-fit: cover;
+
+    border: 2px solid white;
+    box-shadow: 0 0 12px rgba(0,0,0,0.8);
+
+    cursor: pointer;
+
+    transition: transform 0.25s;
+}
+
+.gallery img:hover {
+    transform: scale(1.05);
+}
+
+.lightbox {
+    position: fixed;
+    inset: 0;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background: rgba(0,0,0,0);
+
+    opacity: 0;
+    pointer-events: none;
+
+    transition: background 0.3s, opacity 0.3s;
+}
+
+.lightbox.active {
+    opacity: 1;
+    pointer-events: auto;
+    background: rgba(0,0,0,0.85);
+}
+
+.lightbox img {
+    max-width: 90vw;
+    max-height: 90vh;
+
+    border: 8px solid white;
+
+    transform: scale(0.7);
+    transition: transform 0.3s ease;
+}
+
+.lightbox.active img {
+    transform: scale(1);
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="gallery" id="gallery"></div>
+
+<div class="lightbox" id="lightbox">
+    <img id="lightboxImg">
+</div>
+
+<script>
+
+const gallery = document.getElementById("gallery");
+const lightbox = document.getElementById("lightbox");
+const lightboxImg = document.getElementById("lightboxImg");
+
+let index = 1;
+
+function tryLoad() {
+    const img = new Image();
+    img.src = `img/screen${index}.jpg`;
+
+    img.onload = () => {
+
+        const thumb = document.createElement("img");
+        thumb.src = img.src;
+
+        thumb.onclick = () => openPreview(img.src);
+
+        gallery.appendChild(thumb);
+
+        index++;
+        tryLoad();
+    };
+
+    img.onerror = () => {
+        console.log("Finished loading gallery.");
+    };
+}
+
+tryLoad();
+
+function openPreview(src) {
+    lightboxImg.src = src;
+    lightbox.classList.add("active");
+}
+
+lightbox.onclick = () => {
+    lightbox.classList.remove("active");
+};
+
+</script>
+
+</body>
+</html>
